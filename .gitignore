@@ -1,0 +1,29 @@
+# no .pyc files
+*.pyc
+*.pyo
+*.swp
+
+# no files ends with ~
+*~
+
+# no .bak.py .bak .log
+*.bak.py
+*.bak
+*.log
+
+# no DS_Store file
+.DS_Store
+
+# ignore all files in the backup/ directory
+backup/
+
+# project specific ignore
+#wsgian.egg-info
+#*.egg
+#dist/
+#build/
+#wsgian/
+#wsgian
+developing_modules
+site_config.py
+
