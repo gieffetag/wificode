@@ -39,17 +39,3 @@ def config(pard):
 	
 	return pard
 
-# site_config = {
-#  'HTTP_PROTOCOL': 'http',
-#  'HTTP_ADDRESS': 'localhost',
-#  'HTTP_PORT': 8091,
-#  'cookie_secret' : 'notapplicable',
-#  'DEBUG': True,
-#  'LOGLEVEL': 'debug',
-#  'with_static': True,
-#  'TEMPLATE_RELOAD': True,
-#  'SMTP_HOST': '',
-#  'with_ws': True,
-#  'ws_auth': False,
-#  'ws_version': 2,
-#  }
