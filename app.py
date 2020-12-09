@@ -4,6 +4,7 @@ import wsgian
 
 urls = [		
 	{'pattern': '/',  'module': 'wificode'},
+	{'pattern': '/pdf/{ssid}/{ssid_pw}', 'module': 'wificode', 'action': 'pdf'},
 ]
 
 try:
