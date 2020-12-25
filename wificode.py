@@ -1,11 +1,13 @@
 
 import wsgian.utils
 import bulma
+import build_pdf
 import qrcode
 import qrcode.image.svg
 from io import BytesIO
 import base64
 from PIL import Image
+
 
 def main(pard):
 	pard.setdefault('action', '')
@@ -21,7 +23,7 @@ def main(pard):
 		pard['html'] = render_page(pard)
 	elif pard['action'] == 'scarica':
 		rec = wsgian.utils.cgi_params(pard, 'rec')
-		pdf = build_pdf(pard, rec)
+		pdf = build_pdf.build_pdf(pard, rec)
 		pard['header'] = [
 			('Content-type', 'application/pdf'),
 			('Content-Disposition', 'attachment;filename="wifiqrcode.pdf"')]
@@ -226,9 +228,10 @@ def render_navbar(pard):
 	return h
 
 
-def build_pdf(pard, rec):
-	import pdfkit
-	rec['APPSERVER'] = pard['APPSERVER']
-	pdf = pdfkit.from_url('%(APPSERVER)s/pdf/%(ssid)s/%(ssid_pw)s' % rec, False, options={'quiet': ''})
-	return pdf
+
+# def build_pdf(pard, rec):
+# 	import pdfkit
+# 	rec['APPSERVER'] = pard['APPSERVER']
+# 	pdf = pdfkit.from_url('%(APPSERVER)s/pdf/%(ssid)s/%(ssid_pw)s' % rec, False, options={'quiet': ''})
+# 	return pdf
 
