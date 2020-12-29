@@ -82,7 +82,7 @@ def build_pdf(pard, rec):
 	story.append(Spacer(1,12))
 	story.append(Paragraph(
 		'NETWORK',
-		styles['Center14']))
+		styles['Center']))
 	story.append(Paragraph(
 		rec['ssid'],
 		styles['Title']))
@@ -90,7 +90,7 @@ def build_pdf(pard, rec):
 	story.append(Spacer(1,12))
 	story.append(Paragraph(
 		'PASSWORD',
-		styles['Center14']))
+		styles['Center']))
 	story.append(Paragraph(
 		rec['ssid_pw'],
 		styles['Title']))

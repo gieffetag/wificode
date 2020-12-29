@@ -10,19 +10,22 @@ from PIL import Image
 
 
 def main(pard):
-	pard.setdefault('action', '')
+	pard.setdefault('action', '')	
 	if pard['action'] in ('', 'start'):
 		pard['main_body'] = render_start(pard, {})
 		pard['html'] = render_page(pard)
-	elif pard['action'] in ('stampa', 'pdf'):
+	elif pard['action'] == 'stampa':
+		rec = wsgian.utils.cgi_params(pard, 'rec')
+		pard['main_body'] = render_preview(pard, rec)
+		pard['html'] = render_page(pard)
+	elif pard['action'] == 'refresh_preview':
+		rec = wsgian.utils.cgi_params(pard, 'rec')
+		pard['html'] = render_preview(pard, rec)
+	elif pard['action'] in ('scarica', 'pdf'):
 		if pard['action'] == 'pdf':
 			rec = {'ssid': pard['ssid'], 'ssid_pw': pard['ssid_pw']}
 		else:
 			rec = wsgian.utils.cgi_params(pard, 'rec')
-		pard['main_body'] = render_preview(pard, rec)
-		pard['html'] = render_page(pard)
-	elif pard['action'] == 'scarica':
-		rec = wsgian.utils.cgi_params(pard, 'rec')
 		pdf = build_pdf.build_pdf(pard, rec)
 		pard['header'] = [
 			('Content-type', 'application/pdf'),
@@ -35,6 +38,32 @@ def main(pard):
 
 
 def render_start(pard, rec):
+	tile = {}
+	tile['form'] = render_form(pard, rec)
+	tile['preview'] = render_preview(pard, rec)
+	tile['info'] = '<p class="title">Info</p>'
+	h = '''
+		<div class="tile is-ancestor">
+		  <div class="tile is-6 is-vertical is-parent">
+			<div class="tile is-child box">
+			  %(form)s
+			</div>
+			<div class="tile is-child box">
+			  %(info)s
+			</div>
+		  </div>
+		  <div class="tile is-parent">
+			<div class="tile is-child box has-background-black">
+			  <p class="title has-text-white has-text-centered">Anteprima</p>
+			  <div id="div_preview">%(preview)s</div>
+			</div>
+		  </div>
+		</div>
+		''' % tile
+	return h
+
+
+def render_form(pard, rec):
 	rec.setdefault('ssid', '')
 	rec.setdefault('ssid_pw', '')
 	
@@ -66,18 +95,19 @@ def render_start(pard, rec):
     	    <button class="button is-dark" onclick="submit_form('stampa')">Stampa</button>
   		  </div>
   		  <div class="control">
-    	    <button class="button is-dark" onclick="submit_form('scarica')">Scarica</button>
+    	    <button class="button is-dark" onclick="submit_form('scarica')">Scarica PDF</button>
   		  </div>
 
 	    </div>
 	    </form>
+	    <script src="/static/wificode.js"></script>
 	    <script>
-	    	function submit_form(action) {
-	    		var theAction = document.getElementById('action');
-	    		var theForm = document.getElementById('wificodeForm');
-	    		theAction.value = action;
-	    		theForm.submit();
-	    		}
+	    const submit_form = function (action) {
+			var theAction = document.getElementById('action');
+			var theForm = document.getElementById('wificodeForm');
+			theAction.value = action;
+			theForm.submit();
+		};
 	    </script>
 		''' % rec
 	return h
@@ -88,15 +118,27 @@ def render_start(pard, rec):
 
 
 def render_preview(pard, rec):
-	pard['no_navbar'] = True
 	if pard['action'] == 'stampa':
-		pard['javascript'] = '<script>window.print();</script>'
+		pard['no_navbar'] = True
+		pard['javascript'] = '''
+			<script>
+			document.addEventListener('DOMContentLoaded', function() {
+   				setTimeout(function(){
+ 					window.print();
+				}, 500);
+			}, false);
+			</script>
+			'''
+	if not rec['ssid']:
+		rec['ssid'] = 'WiFiAzzurro'
+	if not rec['ssid_pw']:
+		rec['ssid_pw'] = 'SenJan2021'
 	rec['qrcode'] = render_qrcode(pard, rec)
 	buf = base64.encodestring(rec['qrcode'])
 	h = []
 	h.append('<div class="columns">')
 	h.append('<div class="column"></div>')
-	h.append('<div class="column is-half">')
+	h.append('<div class="column">')
 	h.append('<div class="card">')
 	h.append('<header class="card-header">')
 	h.append('<p class="card-header-title title is-centered">WiFi</p>')
@@ -111,7 +153,7 @@ def render_preview(pard, rec):
 	
 	h.append('<div class="content has-text-centered">')
 	h.append('<p>')
-	h.append('Per connetterti con il telefono o il tablet, scansiona con la fotocamera il QR code.<br>')
+	h.append('Per connetterti con il telefono o il tablet, scansiona il QR code con la fotocamera.<br>')
 	h.append('Per gli altri dispositivi, utilizza le credenziali specificate in seguito.')
 	h.append('</p>')
 	h.append('<br><br>')
@@ -203,8 +245,8 @@ def render_page(pard):
 		%(main_body)s
 		</div>
 	  </section>
-	  </body>
 	  %(javascript)s
+	  </body>
 	</html>
 	''' % pard	
 	return html
