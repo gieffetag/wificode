@@ -29,7 +29,7 @@ def main(pard):
 		pdf = build_pdf.build_pdf(pard, rec)
 		pard['header'] = [
 			('Content-type', 'application/pdf'),
-			('Content-Disposition', 'attachment;filename="wifiqrcode.pdf"')]
+			('Content-Disposition', 'attachment;filename="wificode.pdf"')]
 		pard['html'] = pdf
 	else:
 		pard['html'] = wsgian.utils.dump(pard['action'])
@@ -41,11 +41,13 @@ def render_start(pard, rec):
 	tile = {}
 	tile['form'] = render_form(pard, rec)
 	tile['preview'] = render_preview(pard, rec)
-	tile['info'] = '<p class="title">Info</p>'
+	tile['info'] = render_info(pard)
 	h = '''
 		<div class="tile is-ancestor">
 		  <div class="tile is-6 is-vertical is-parent">
 			<div class="tile is-child box">
+			  <p class="title is-4 has-text-centered">Crea il tuo WiFi Code</p>
+			  <p class="subtitle has-text-centered pb-4">Inserisci le credenziali</p>
 			  %(form)s
 			</div>
 			<div class="tile is-child box">
@@ -54,7 +56,7 @@ def render_start(pard, rec):
 		  </div>
 		  <div class="tile is-parent">
 			<div class="tile is-child box has-background-black">
-			  <p class="title has-text-white has-text-centered">Anteprima</p>
+			  <p class="title pb-4 has-text-white has-text-centered">Anteprima</p>
 			  <div id="div_preview">%(preview)s</div>
 			</div>
 		  </div>
@@ -62,6 +64,58 @@ def render_start(pard, rec):
 		''' % tile
 	return h
 
+
+def render_info(pard):
+	h = '''
+		<p class="title has-text-centered">Che cos'&egrave;?</p>
+		<div class="block">
+		<p>
+		  La maggior parte dei telefoni e dei tablet permettono di configurare
+		  in automatico la rete <i>wi-fi</i> tramite la scansione di un QR Code
+		  opportunamente costruito.
+		</p>
+		<p>
+		  Dentro al codice ci sono le
+		  istruzioni che permettono al telefono di configurare la rete, <b>senza
+		  bisogno di doverla ricercare e senza dover digitare una lunga password.</b>
+		</p>
+		</div>
+		
+		<div class="block">
+		  Questa applicazione permette di creare velocemente un foglio
+		  stampabile con le credenziali del vostro wi-fi.
+		</div>
+		
+		<div class="block">
+		<p class="is-size-5"><b>&Egrave; Sicuro?</b></p>
+		<p>
+		  Certo! Le credenziali vengono trasmesse in modo sicuro e
+		  nessun dato viene registrato, conservato o esposto.
+		</p>
+		</div>
+		
+		<div class="block">
+		<p class="is-size-5"><b>Sei un web developer?</b></p>
+		<p>
+		  Vuoi far scaricare il PDF direttamente dal sito o dalla app?
+		</p>
+		<p>
+		  &Egrave; semplicissimo, usa questo link:
+		  <span class="tag is-info">https://wificode.com/pdf/codice_ssid/password</span>
+		</p>
+		<p>Ma non metterlo direttamente sul sito o esporrai le credenziali
+		della rete wi-fi.</p>
+		</div>
+		<div class="block">
+		<p class="is-size-5"><b>Chi siamo?</b></p>
+		<p><i>WiFi Code</i> &egrave; stato scritto da
+		 <a href="http://www.inputidea.it/we.html">InputIdea</a>.
+		 Forniamo soluzioni e servizi per il web, il commercio
+		 elettronico e i market place.
+		</p>
+		</div>
+		'''
+	return h
 
 def render_form(pard, rec):
 	rec.setdefault('ssid', '')
@@ -90,7 +144,7 @@ def render_form(pard, rec):
 		%(input_ssid)s
 		%(input_ssid_pw)s
 		
-		<div class="field is-grouped is-grouped-centered">
+		<div class="field is-grouped is-grouped-centered pt-5">
 	  	  <div class="control">
     	    <button class="button is-dark" onclick="submit_form('stampa')">Stampa</button>
   		  </div>
@@ -103,6 +157,22 @@ def render_form(pard, rec):
 	    <script src="/static/wificode.js"></script>
 	    <script>
 	    const submit_form = function (action) {
+	    	event.preventDefault();
+	    	var ssid = document.querySelector("#input_ssid input");
+			var ssid_pw = document.querySelector("#input_ssid_pw input");
+			if (ssid.value == '') {
+				ssid.classList.add("is-danger");
+				ssid.focus();
+				return false;
+			}
+			else {
+				ssid.classList.remove("is-danger");
+			};
+			if (ssid_pw.value == '') {
+				ssid_pw.classList.add("is-danger");
+				ssid_pw.focus();
+				return false;
+			};
 			var theAction = document.getElementById('action');
 			var theForm = document.getElementById('wificodeForm');
 			theAction.value = action;
@@ -111,10 +181,6 @@ def render_form(pard, rec):
 	    </script>
 		''' % rec
 	return h
-
-#   		  <div class="control">
-#     	    <a class="button is-dark" href="/">Stampa</a>
-# 	      </div>
 
 
 def render_preview(pard, rec):
@@ -164,7 +230,7 @@ def render_preview(pard, rec):
 	h.append('</div>')
 	
 	h.append('<div class="content has-text-centered is-small pt-5">')
-	h.append('<p>Crea il QR Code per il tuo WiFi: <strong>wifiqrcode.com</strong></p>')
+	h.append('<p>Crea il QR Code per il tuo WiFi: <strong>wificode.com</strong></p>')
 	h.append('</div>')
 	
 	
@@ -261,7 +327,7 @@ def render_navbar(pard):
 	  <span class="icon is-medium mr-2">
 	    <i class="fas fa-lg fa-wifi"></i>
 	  </span>
-	  <span class="title is-4">WiFi QR Code</span>
+	  <span class="title is-4">WiFi Code</span>
 	</a>
 	
 	</div>	

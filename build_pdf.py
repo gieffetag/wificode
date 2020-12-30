@@ -97,7 +97,7 @@ def build_pdf(pard, rec):
 
 	story.append(Spacer(1,90))
 	story.append(Paragraph(
-		'Crea il QR Code per il tuo WiFi:<b>wifiqrcode.com</b>',
+		'Crea il QR Code per il tuo WiFi:<b>wificode.com</b>',
 		styles['Center8']))
 	
 	filename = BytesIO()
