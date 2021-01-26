@@ -10,7 +10,7 @@ urls = [
 try:
 	config = config.config({})
 except ImportError:
-	print 'config not found: run "python config.py" then edit site_config.py'
+	print('config not found: run "python config.py" then edit site_config.py')
 	sys.exit(1)
 
 app = wsgian.App(urls, config)

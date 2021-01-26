@@ -111,7 +111,7 @@ def render_info(pard):
 		<p><i>WiFi Code</i> &egrave; stato scritto da
 		 <a href="http://www.inputidea.it/we.html">InputIdea</a>.
 		 Forniamo soluzioni e servizi per il web, il commercio
-		 elettronico e i market place.
+		 elettronico e i marketplace.
 		</p>
 		</div>
 		'''
@@ -200,7 +200,10 @@ def render_preview(pard, rec):
 	if not rec['ssid_pw']:
 		rec['ssid_pw'] = 'SenJan2021'
 	rec['qrcode'] = render_qrcode(pard, rec)
-	buf = base64.encodestring(rec['qrcode'])
+	try:
+		buf = base64.encodebytes(rec['qrcode'])
+	except AttributeError:
+		buf = base64.encodestring(rec['qrcode'])
 	h = []
 	h.append('<div class="columns">')
 	h.append('<div class="column"></div>')
@@ -211,7 +214,7 @@ def render_preview(pard, rec):
 	h.append('</header>')
 	h.append('<div class="card-content">')
 	
-	rec['img_src'] = 'data:image/jpeg;base64,' + buf
+	rec['img_src'] = 'data:image/jpeg;base64,' + buf.decode('utf-8')
 	rec['img_class'] = 'is-square'
 	h.append('<figure class="image qrcode">' % rec)
 	h.append('  <img src="%(img_src)s">' % rec)

@@ -29,7 +29,7 @@ def config(pard):
 	
 	pard['APPLICATION_NAME'] = 'WiFiCode'
 	
-	_HTTP_PORT = ':' + str(pard['HTTP_PORT']) if pard['HTTP_PORT'] <> 80 else ''
+	_HTTP_PORT = ':' + str(pard['HTTP_PORT']) if pard['HTTP_PORT'] != 80 else ''
 	pard['APPSERVER'] = '%(HTTP_PROTOCOL)s://%(HTTP_ADDRESS)s' % pard + _HTTP_PORT
 	
 	pard['PROJECT'] = 'wificode'
