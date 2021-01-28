@@ -17,13 +17,10 @@
 # ignore all files in the backup/ directory
 backup/
 
+# ignore local environment file
+.env
+
 # project specific ignore
-#wsgian.egg-info
-#*.egg
-#dist/
-#build/
-#wsgian/
-#wsgian
 developing_modules
 site_config.py
 pippo.*
