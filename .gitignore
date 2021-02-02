@@ -24,4 +24,5 @@ backup/
 developing_modules
 site_config.py
 pippo.*
+Dockerfile.tiangolo
 

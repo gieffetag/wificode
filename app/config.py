@@ -5,8 +5,8 @@ import wsgian
 def config(pard):
 	default_config = {
 		'HTTP_PROTOCOL': 'http',
-		'HTTP_ADDRESS': 'localhost',
-		'HTTP_PORT': '80',
+		'HTTP_ADDRESS': '0.0.0.0',
+		'HTTP_PORT': 80,
 		'db.mysql': {},
 		'SMTP_HOST': '',
 		'SMTP_PORT': '',
@@ -28,6 +28,8 @@ def config(pard):
 	for k in default_config:
 		pard[k] = os.environ.get(k, default_config[k])
 	
+	pard['HTTP_PORT'] = int(pard['HTTP_PORT'])
+	
 	pard['APPLICATION_NAME'] = 'WiFiCode'
 	
 	pard['APP_URL'] = os.environ.get('APP_URL')
@@ -35,8 +37,9 @@ def config(pard):
 	if pard['APP_URL']:
 		pard['APPSERVER'] = pard['APP_URL']
 	else:
-		_HTTP_PORT = ':' + str(pard['HTTP_PORT']) if pard['HTTP_PORT'] != 80 else ''
-		pard['APPSERVER'] = '%(HTTP_PROTOCOL)s://%(HTTP_ADDRESS)s' % pard + _HTTP_PORT
+# 		_HTTP_PORT = ':' + str(pard['HTTP_PORT']) if pard['HTTP_PORT'] != 80 else ''
+# 		pard['APPSERVER'] = '%(HTTP_PROTOCOL)s://%(HTTP_ADDRESS)s' % pard + _HTTP_PORT
+		pard['APPSERVER'] = '/'
 	
 	pard['PROJECT'] = 'wificode'
 	pard['PROJECT_SUBTITLE'] = 'Generatore di QRCode per la configurazione automatica della rete wi-fi'
