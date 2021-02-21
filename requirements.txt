@@ -2,3 +2,4 @@ Pillow
 qrcode
 reportlab
 git+https://gieffe@bitbucket.org/gieffe/wsgian.git@python3#egg=wsgian
+bjoern
