@@ -17,6 +17,4 @@ app = wsgian.App(urls, config)
 
 if __name__ == '__main__':
 	wsgian.quickstart(app, config['HTTP_ADDRESS'], int(config['HTTP_PORT']))
-	#import bjoern
-	#bjoern.run(app, config['HTTP_ADDRESS'], int(config['HTTP_PORT']))
 
