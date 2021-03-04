@@ -1,5 +1,4 @@
 import json
-import multiprocessing
 import os
 import wsgian
 
@@ -10,12 +9,15 @@ port = os.getenv("HTTP_PORT", "8091")
 bind = '0.0.0.0:{port}'.format(port=port)
 
 # Workers
-cores = multiprocessing.cpu_count()
-if os.getenv("ENV", "svil") == 'prod':
-	workers = 2 * cores
-else:
-	workers = 2
+workers = 2
 keepalive = 60
+worker_class = 'gthread'
+threads = 4
+
+if os.path.isdir("/dev/shm"):
+	worker_tmp_dir = '/dev/shm'
+else:
+	worker_tmp_dir = None
 
 # Logging
 errorlog = "-"
@@ -27,9 +29,12 @@ conf_data = {
 	'bind': bind,
 	'workers': workers,
 	'keepalive': keepalive,
+	'threads': threads,
+	'worker_class': worker_class,
 	'errorlog': errorlog,
 	'loglevel': loglevel,
 	'accesslog': accesslog,
 	'access_log_format': access_log_format,
+	'worker_tmp_dir': worker_tmp_dir,
 }
 print(json.dumps(conf_data, indent=4))
